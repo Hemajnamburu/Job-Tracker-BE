@@ -38,7 +38,16 @@ router.get("/summary", verifyToken, async (req, res) => {
       {
         $group: {
           _id: "$companyId",
-          applications: { $sum: 1 },
+          applications: {
+            $sum: {
+              $cond: [{ $ne: ["$currentStatus", "Saved"] }, 1, 0],
+            },
+          },
+          saved: {
+            $sum: {
+              $cond: [{ $eq: ["$currentStatus", "Saved"] }, 1, 0],
+            },
+          },
           interviews: {
             $sum: {
               $cond: [{ $eq: ["$currentStatus", "Interview Scheduled"] }, 1, 0],
@@ -76,6 +85,7 @@ router.get("/summary", verifyToken, async (req, res) => {
           name: "$companyInfo.name",
           avatarColor: "$companyInfo.avatarColor",
           applications: 1,
+          saved: 1,
           interviews: 1,
           lastApplied: 1,
           initial: { $substr: ["$companyInfo.name", 0, 1] },

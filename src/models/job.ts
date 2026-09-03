@@ -9,6 +9,7 @@ export interface IJob extends Document {
   department: string;
   location: string;
   currentStatus:
+    | "Saved"
     | "Applied"
     | "Interview Scheduled"
     | "Rejected"
@@ -46,7 +47,7 @@ const JobSchema: Schema<IJob> = new Schema(
     location: { type: String, default: "" },
     currentStatus: {
       type: String,
-      enum: ["Applied", "Rejected", "Offer Received", "Interview Scheduled"],
+      enum: ["Saved", "Applied", "Rejected", "Offer Received", "Interview Scheduled"],
       default: "Applied",
     },
     applicationDate: { type: Date },
