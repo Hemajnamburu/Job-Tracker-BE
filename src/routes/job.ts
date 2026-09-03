@@ -3,6 +3,7 @@ import Job from "../models/job";
 import Company from "../models/company";
 import { verifyToken } from "../middleware/auth";
 import mongoose from "mongoose";
+import { escapeRegex } from "../utils/regex";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
     };
 
     if (search) {
-      const regex = new RegExp(search as string, "i"); // case-insensitive
+      const regex = new RegExp(escapeRegex(search as string), "i"); // case-insensitive
 
       query.$or = [
         { companyName: regex },

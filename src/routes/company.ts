@@ -3,6 +3,7 @@ import Company from "../models/company";
 import { verifyToken } from "../middleware/auth";
 import mongoose from "mongoose";
 import job from "../models/job";
+import { escapeRegex } from "../utils/regex";
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
 
     const companies = await Company.find({
       userId,
-      name: { $regex: search || "", $options: "i" },
+      name: { $regex: escapeRegex(search || ""), $options: "i" },
     });
 
     res.json(companies);
@@ -73,7 +74,7 @@ router.get("/summary", verifyToken, async (req, res) => {
     if (search) {
       pipeline.push({
         $match: {
-          "companyInfo.name": { $regex: search, $options: "i" },
+          "companyInfo.name": { $regex: escapeRegex(search as string), $options: "i" },
         },
       });
     }
